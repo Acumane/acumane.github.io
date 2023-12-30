@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro'
+import '@fontsource/jetbrains-mono'
+import '../global.scss'
+
+const GH = 'https://github.com/Acumane'
+---
+
+<Layout title="Bren">
+	<main><p>
+		<span id="prompt"> › </span>
+		<span id="input"></span>
+	</p></main>
+</Layout> 
+
+<script>
+import TypeIt from 'typeit'
+const GH = 'https://github.com/Acumane'
+
+new TypeIt("#input", {
+    speed: 50,
+	lifeLike: true,
+	startDelay: 600,
+})
+.type("Nothing to see here. ", { delay: 100 })
+.move(-2, { delay: 50 })
+.type(" (yet)", { delay: 200 })
+.move(2)
+.type(`Check out my <a href="${GH}">GitHub</a> instead`)
+.go()
+
+</script>
+
+<style lang="scss">
+	#prompt { color: gray; }
+</style>

@@ -1,0 +1,21 @@
+$bg: #0B0017;
+$text: #DCD7BA;
+$primary: #84A0CA;
+$secondary: #5E7998; 
+
+html {
+	font-family: 'JetBrains Mono', sans-serif;
+	color: $text;
+	background: $bg;
+	padding: 1em;
+}
+
+a {
+	color: $primary;
+	text-decoration: none;
+	
+	&:hover, &:focus {
+		color: #D0FC0A;
+		text-decoration: wavy underline;
+	}
+}
