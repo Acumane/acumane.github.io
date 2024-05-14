@@ -7,27 +7,77 @@ const GH = 'https://github.com/Acumane'
 ---
 
 <Layout title="Bren">
-	<main><p>
-		<span id="prompt"> › </span>
-		<span id="input"></span>
-	</p></main>
+	<div class="ret" id="v-line"></div>
+	<div class="ret" id="h-line"></div>
+
+	<div class="ret" id="cursor"></div>
+	<div class="ret" id="ret-mask"></div>
+	<a href={GH} data-act="github.com/Acumane">GitHub</a>
+	<span class="ret" id="ret-action"></span>
 </Layout> 
 
 <script>
-import TypeIt from 'typeit'
-const GH = 'https://github.com/Acumane'
+let overClickable = false
 
-new TypeIt("#input", {
-    speed: 50,
-	lifeLike: true,
-	startDelay: 600,
+const cursor = document.getElementById('cursor'),
+vLine = document.getElementById('v-line'),
+hLine = document.getElementById('h-line'),
+retMask = document.getElementById('ret-mask'),
+retAct = document.getElementById('ret-action'),
+ret = document.querySelectorAll('.ret')
+
+
+window.addEventListener('mousemove', e => {
+	if (!overClickable) {
+		retMask.style.left = `${e.clientX -13}px`
+		retMask.style.top = `${e.clientY - 13}px`
+		vLine.style.left = `${e.clientX + 1}px`
+		hLine.style.top = `${e.clientY + 1}px`
+	}
+	cursor.style.left = `${e.clientX}px`
+	cursor.style.top = `${e.clientY}px`
 })
-.type("Nothing to see here. ", { delay: 100 })
-.move(-2, { delay: 50 })
-.type(" (yet)", { delay: 200 })
-.move(2)
-.type(`Check out my <a href="${GH}">GitHub</a> instead`)
-.go()
+
+window.addEventListener('focus', e => {
+	ret.forEach(elem => elem.style.opacity = '1')
+})
+window.addEventListener('blur', e => {
+	ret.forEach(elem => elem.style.opacity = '0')
+
+})
+
+
+
+const clickableElements = document.querySelectorAll( // All clickable elements
+	'button, a, input[type="button"], input[type="submit"], [onclick]'
+)
+
+clickableElements.forEach(elem => {
+  elem.addEventListener('mouseover', onClickable)
+  elem.addEventListener('mouseout', offClickable)
+})
+
+function onClickable(e) {
+	retAct.style.visibility = 'visible'
+	overClickable = true
+
+	const elem = e.target, rect = elem.getBoundingClientRect()
+	// console.log(elem.getBoundingClientRect())
+	vLine.style.opacity = '0'
+	hLine.style.opacity = '0'
+
+	retAct.style.left = `${rect.left}px`
+	retAct.style.top = `${rect.bottom + 10}px`
+
+	retAct.innerHTML = elem.dataset.act
+}
+
+async function offClickable(event) {
+	overClickable = false
+	vLine.style.opacity = '1'; hLine.style.opacity = '1'
+	retAct.style.visibility = 'hidden'
+
+}
 
 </script>
 

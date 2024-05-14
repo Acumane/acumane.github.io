@@ -1,4 +1,6 @@
 $bg: #0B0017;
+$dark: #32323D;
+$dim: #404048;
 $text: #DCD7BA;
 $primary: #84A0CA;
 $secondary: #5E7998; 
@@ -10,6 +12,11 @@ html {
 	padding: 1em;
 }
 
+html, body {
+	height: 100%;
+	cursor: none;
+}
+
 a {
 	color: $primary;
 	text-decoration: none;
@@ -18,4 +25,57 @@ a {
 		color: #D0FC0A;
 		text-decoration: wavy underline;
 	}
+}
+
+#v-line {
+	position: fixed;
+	top: 0px;
+	border-left: 1px dashed;
+	height: 100%;
+}
+
+#ret-action {
+	color: $dim;
+	font-size: smaller;
+	position: fixed;	
+	visibility: hidden;
+}
+
+#h-line {
+	position: fixed;
+	left: 0px;
+	border-top: 1px dashed;
+	width: 100%;
+}
+
+.ret {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.25s ease-in-out;
+}
+
+#v-line, #h-line {
+	border-color: $dark;
+	z-index: -2;
+}
+
+#cursor {
+	width: 3px; height: 3px;
+	position: fixed;
+	top: 0px; left: 0px;
+	background-color: white;
+	z-index: 1;
+
+}
+
+#ret-mask {
+	width: 30px; height: 30px;
+	position: fixed;
+	top: 0px; left: 0px;
+	background-color: $bg;
+	z-index: -1;
+}
+
+a, button, [role="button"] {
+  cursor: none;
 }
