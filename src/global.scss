@@ -17,6 +17,10 @@ html, body {
 	cursor: none;
 }
 
+a, button, [role="button"] {
+  cursor: none;
+}
+
 a {
 	color: $primary;
 	text-decoration: none;
@@ -59,23 +63,55 @@ a {
 	z-index: -2;
 }
 
-#cursor {
-	width: 3px; height: 3px;
-	position: fixed;
-	top: 0px; left: 0px;
-	background-color: white;
-	z-index: 1;
-
-}
-
 #ret-mask {
 	width: 30px; height: 30px;
+	transition: transform 0.2s ease-in-out;
 	position: fixed;
 	top: 0px; left: 0px;
 	background-color: $bg;
 	z-index: -1;
 }
 
-a, button, [role="button"] {
-  cursor: none;
+#test {
+	position: fixed;
+	top: 50%; left: 50%;
+	width: 100px; height: 50px;
+}
+
+#dot {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.2s ease-in-out;
+	width: 5px; height: 5px;
+	border-radius: 1px;
+	position: fixed;
+	top: 0px; left: 0px;
+	background-color: white;
+	box-shadow: 0px 0px 10px white;
+	z-index: 1;
+}
+
+#sel {
+	$s: 6px; /* corner size */
+	$t: 2px;  /* border thickness */
+	$g: 2px; /* padding "gap" */
+  
+	position: fixed;
+	pointer-events: none;
+	width: 1px; height: 1px;
+	transition: transform 0.2s, opacity 0.25s;
+	opacity: 0;
+
+	padding: 5px;
+	border-radius: 3px;
+	z-index: 1;
+
+	padding: calc($g + $t);
+	outline: $t solid;
+	outline-color: white;
+	outline-offset: calc(-1*$t);
+	mask:
+		conic-gradient(at $s $s, transparent 75%, $bg 0)
+		0 0/calc(100% - $s) calc(100% - $s),
+		linear-gradient($bg 0 0) content-box;
 }

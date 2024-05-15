@@ -9,78 +9,121 @@ const GH = 'https://github.com/Acumane'
 <Layout title="Bren">
 	<div class="ret" id="v-line"></div>
 	<div class="ret" id="h-line"></div>
-
-	<div class="ret" id="cursor"></div>
 	<div class="ret" id="ret-mask"></div>
+
+	<div id="dot"></div>
 	<a href={GH} data-act="github.com/Acumane">GitHub</a>
-	<span class="ret" id="ret-action"></span>
+	<span id="ret-action"></span>
+	<div id="sel"></div>
+	<button id="test" data-act="/to/path/">test</div>
+	
 </Layout> 
 
 <script>
-let overClickable = false
+let overClickable = false, init = false, tID, isAnim
 
-const cursor = document.getElementById('cursor'),
+const dot = document.getElementById('dot'),
 vLine = document.getElementById('v-line'),
 hLine = document.getElementById('h-line'),
 retMask = document.getElementById('ret-mask'),
 retAct = document.getElementById('ret-action'),
-ret = document.querySelectorAll('.ret')
-
+ret = document.querySelectorAll('.ret'),
+sel = document.getElementById('sel')
 
 window.addEventListener('mousemove', e => {
 	if (!overClickable) {
-		retMask.style.left = `${e.clientX -13}px`
-		retMask.style.top = `${e.clientY - 13}px`
-		vLine.style.left = `${e.clientX + 1}px`
-		hLine.style.top = `${e.clientY + 1}px`
+		if (!init) {
+			ret.forEach(elem => elem.style.opacity = '1')
+			sel.style.opacity = '0.4'
+			init = true
+		} 
+		sel.style.left = `${e.clientX - 3}px`
+		sel.style.top = `${e.clientY - 3}px`
 	}
-	cursor.style.left = `${e.clientX}px`
-	cursor.style.top = `${e.clientY}px`
+	retMask.style.left = `${e.clientX - 13.5}px`
+	retMask.style.top = `${e.clientY - 13.5}px`
+	vLine.style.left = `${e.clientX + 1}px`
+	hLine.style.top = `${e.clientY + 1}px`
+
+	dot.style.left = `${e.clientX - 1}px`
+	dot.style.top = `${e.clientY - 1}px`
+
 })
 
-window.addEventListener('focus', e => {
-	ret.forEach(elem => elem.style.opacity = '1')
-})
-window.addEventListener('blur', e => {
+window.addEventListener('focus', () => {
+if (init) {
+	ret.forEach(elem => elem.style.opacity = '1')		
+	sel.style.opacity = '0.4'
+}})
+window.addEventListener('blur', () =>
 	ret.forEach(elem => elem.style.opacity = '0')
+)
 
+window.addEventListener('click', () => {
+	if (!overClickable) { // dot effect
+		sel.style.transform = 'scale(0.5)'
+		retMask.style.transform = 'scale(0.6)'
+
+		dot.style.opacity = '1'
+		setTimeout(() => { 
+			dot.style.opacity = '0'
+			retMask.style.transform = 'unset'
+		}, 200)
+	}
+	else sel.style.transform = 'scale(0.9)'
+	setTimeout(() => { sel.style.transform = 'none'}, 200)
 })
-
-
 
 const clickableElements = document.querySelectorAll( // All clickable elements
 	'button, a, input[type="button"], input[type="submit"], [onclick]'
 )
 
 clickableElements.forEach(elem => {
-  elem.addEventListener('mouseover', onClickable)
-  elem.addEventListener('mouseout', offClickable)
+	elem.addEventListener('mouseover', onClickable)
+	elem.addEventListener('mouseout', offClickable)
 })
 
 function onClickable(e) {
+	if (tID) clearTimeout(tID);
+
 	retAct.style.visibility = 'visible'
 	overClickable = true
 
 	const elem = e.target, rect = elem.getBoundingClientRect()
 	// console.log(elem.getBoundingClientRect())
-	vLine.style.opacity = '0'
-	hLine.style.opacity = '0'
+	ret.forEach(elem => elem.style.opacity = '0')
 
 	retAct.style.left = `${rect.left}px`
 	retAct.style.top = `${rect.bottom + 10}px`
 
 	retAct.innerHTML = elem.dataset.act
+
+	sel.style.top = `${rect.top - 6}px`
+	sel.style.left = `${rect.left - 6}px`
+	sel.style.width = `${rect.width + 4}px`
+	sel.style.height = `${rect.height + 4}px`
+
+	sel.style.opacity = '1'
+	sel.style.transition = 'all 0.25s, opacity 0.4s'
+	sel.style.outlineColor = 'white'
 }
 
-async function offClickable(event) {
+function offClickable(event) {
 	overClickable = false
-	vLine.style.opacity = '1'; hLine.style.opacity = '1'
+	ret.forEach(elem => elem.style.opacity = '1')
 	retAct.style.visibility = 'hidden'
 
+	sel.style.width = '1px'
+	sel.style.height = '1px'
+	sel.style.opacity = '0.4'
+	isAnim = true
+	tID = setTimeout(() => { 
+		sel.style.transition = 'transform 0.2s, opacity 0.25s'
+		isAnim = false
+	}, 600)
 }
 
 </script>
 
 <style lang="scss">
-	#prompt { color: gray; }
 </style>
