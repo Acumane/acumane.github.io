@@ -20,8 +20,10 @@ const GH = 'https://github.com/Acumane'
 </Layout> 
 
 <script>
-let overClickable = false, init = false, tID,
-mouseX = 0, mouseY = 0
+let overClickable = false, init = false, tID, 
+mouseX = 0, mouseY = 0, lastDown = 0, i = 0
+const DARK = '#32323D', DIM = '#404048'
+
 
 const dot = document.getElementById('dot'),
 vLine = document.getElementById('v-line'),
@@ -55,6 +57,8 @@ window.addEventListener('mousemove', e => {
 document.documentElement.addEventListener('mouseleave', () => {
 	ret.forEach(elem => elem.style.opacity = '0')
 	sel.style.opacity = '0'
+	onMouseUp()
+	
 })
 document.documentElement.addEventListener('mouseenter', () => {
 	if(init) {
@@ -63,20 +67,28 @@ document.documentElement.addEventListener('mouseenter', () => {
 	}
 })
 
-window.addEventListener('click', () => {
+window.addEventListener('mousedown', () => {
 	if (!overClickable) { // dot effect
+		lastDown = Date.now()
 		sel.style.transform = 'scale(0.5)'
 		retMask.style.transform = 'scale(0.6)'
-
 		dot.style.opacity = '1'
-		setTimeout(() => { 
-			dot.style.opacity = '0'
-			retMask.style.transform = 'unset'
-		}, 200)
+		vLine.style.borderColor = hLine.style.borderColor = DIM
 	}
 	else sel.style.transform = 'scale(0.92)'
-	setTimeout(() => { sel.style.transform = 'none'}, 200)
 })
+
+window.addEventListener('mouseup', onMouseUp)
+
+function onMouseUp() {
+	const release = (Date.now() - lastDown) < 200 ? 200 : 0
+	setTimeout(() => { // dot effect
+		dot.style.opacity = '0'
+		retMask.style.transform = sel.style.transform = 'unset'
+		vLine.style.borderColor = hLine.style.borderColor = DARK
+
+	}, release)
+}
 
 const clickableElements = document.querySelectorAll( // All clickable elements
 	'button, a, input[type="button"], input[type="submit"], [onclick]'
@@ -111,6 +123,14 @@ function onClickable(e) {
 	sel.style.transition = 'all 0.2s, transform 0.1s'
 	sel.style.transitionTimingFunction = 'ease-out'
 	sel.style.outlineColor = 'white'
+	
+	const pulse = () => {
+		i += 1
+		sel.style.opacity = `${Math.sin(i * 0.02)/4 +.75}`	
+		if (overClickable) window.requestAnimationFrame(pulse)
+		else { sel.style.opacity = '0.4'; i = 0 }
+	}
+	pulse()
 }
 
 function offClickable() {
@@ -122,8 +142,7 @@ function offClickable() {
 	ret.forEach(elem => elem.style.opacity = '1')
 	retAct.style.visibility = 'hidden'
 
-	sel.style.width = '1px'
-	sel.style.height = '1px'
+	sel.style.width = sel.style.height = '1px'
 	sel.style.opacity = '0.4'
 
 	const selCatchUp = () => {

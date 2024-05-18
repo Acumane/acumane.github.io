@@ -16,6 +16,7 @@ html, body {
 	height: 100%;
 	cursor: none;
 	overflow: hidden;
+	user-select: none;
 }
 
 a, button, [role="button"] {
@@ -60,7 +61,7 @@ a {
 }
 
 #v-line, #h-line {
-	border-color: $dim;
+	border-color: $dark;
 	z-index: -2;
 }
 
