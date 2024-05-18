@@ -15,6 +15,7 @@ html {
 html, body {
 	height: 100%;
 	cursor: none;
+	overflow: hidden;
 }
 
 a, button, [role="button"] {
@@ -55,17 +56,17 @@ a {
 .ret {
 	opacity: 0;
 	pointer-events: none;
-	transition: opacity 0.25s ease-in-out;
+	transition: opacity 0.25s ease-out;
 }
 
 #v-line, #h-line {
-	border-color: $dark;
+	border-color: $dim;
 	z-index: -2;
 }
 
 #ret-mask {
 	width: 30px; height: 30px;
-	transition: transform 0.2s ease-in-out;
+	transition: transform 0.1s ease-out;
 	position: fixed;
 	top: 0px; left: 0px;
 	background-color: $bg;
@@ -81,7 +82,7 @@ a {
 #dot {
 	opacity: 0;
 	pointer-events: none;
-	transition: opacity 0.2s ease-in-out;
+	transition: opacity 0.2s ease-out;
 	width: 5px; height: 5px;
 	border-radius: 1px;
 	position: fixed;
@@ -100,6 +101,7 @@ a {
 	pointer-events: none;
 	width: 1px; height: 1px;
 	transition: transform 0.2s, opacity 0.25s;
+	transition-timing-function: ease-out;
 	opacity: 0;
 
 	padding: 5px;

@@ -20,7 +20,8 @@ const GH = 'https://github.com/Acumane'
 </Layout> 
 
 <script>
-let overClickable = false, init = false, tID, isAnim
+let overClickable = false, init = false, tID,
+mouseX = 0, mouseY = 0
 
 const dot = document.getElementById('dot'),
 vLine = document.getElementById('v-line'),
@@ -31,33 +32,36 @@ ret = document.querySelectorAll('.ret'),
 sel = document.getElementById('sel')
 
 window.addEventListener('mousemove', e => {
+	mouseX = e.clientX; mouseY = e.clientY
 	if (!overClickable) {
 		if (!init) {
 			ret.forEach(elem => elem.style.opacity = '1')
 			sel.style.opacity = '0.4'
 			init = true
 		} 
-		sel.style.left = `${e.clientX - 3}px`
-		sel.style.top = `${e.clientY - 3}px`
+		sel.style.left = mouseX - 3 + 'px'
+		sel.style.top = mouseY - 3 + 'px'
 	}
-	retMask.style.left = `${e.clientX - 13.5}px`
-	retMask.style.top = `${e.clientY - 13.5}px`
-	vLine.style.left = `${e.clientX + 1}px`
-	hLine.style.top = `${e.clientY + 1}px`
+	retMask.style.left = mouseX - 13.5 + 'px'
+	retMask.style.top = mouseY - 13.5 + 'px'
+	vLine.style.left = mouseX + 1 + 'px'
+	hLine.style.top = mouseY + 1 + 'px'
 
-	dot.style.left = `${e.clientX - 1}px`
-	dot.style.top = `${e.clientY - 1}px`
-
+	dot.style.left = mouseX - 1 + 'px'
+	dot.style.top = mouseY - 1 + 'px'
+	
 })
 
-window.addEventListener('focus', () => {
-if (init) {
-	ret.forEach(elem => elem.style.opacity = '1')		
-	sel.style.opacity = '0.4'
-}})
-window.addEventListener('blur', () =>
+document.documentElement.addEventListener('mouseleave', () => {
 	ret.forEach(elem => elem.style.opacity = '0')
-)
+	sel.style.opacity = '0'
+})
+document.documentElement.addEventListener('mouseenter', () => {
+	if(init) {
+		ret.forEach(elem => elem.style.opacity = '1')		
+		sel.style.opacity = '0.4'
+	}
+})
 
 window.addEventListener('click', () => {
 	if (!overClickable) { // dot effect
@@ -70,7 +74,7 @@ window.addEventListener('click', () => {
 			retMask.style.transform = 'unset'
 		}, 200)
 	}
-	else sel.style.transform = 'scale(0.9)'
+	else sel.style.transform = 'scale(0.92)'
 	setTimeout(() => { sel.style.transform = 'none'}, 200)
 })
 
@@ -93,34 +97,50 @@ function onClickable(e) {
 	// console.log(elem.getBoundingClientRect())
 	ret.forEach(elem => elem.style.opacity = '0')
 
-	retAct.style.left = `${rect.left}px`
-	retAct.style.top = `${rect.bottom + 10}px`
+	retAct.style.left = rect.left + 'px'
+	retAct.style.top = rect.bottom + 10 + 'px'
 
 	retAct.innerHTML = elem.dataset.act
 
-	sel.style.top = `${rect.top - 6}px`
-	sel.style.left = `${rect.left - 6}px`
-	sel.style.width = `${rect.width + 4}px`
-	sel.style.height = `${rect.height + 4}px`
+	sel.style.top = rect.top - 6 + 'px'
+	sel.style.left = rect.left - 6 + 'px'
+	sel.style.width = rect.width + 4 + 'px'
+	sel.style.height = rect.height + 4 + 'px'
 
 	sel.style.opacity = '1'
-	sel.style.transition = 'all 0.25s, opacity 0.4s'
+	sel.style.transition = 'all 0.2s, transform 0.1s'
+	sel.style.transitionTimingFunction = 'ease-out'
 	sel.style.outlineColor = 'white'
 }
 
-function offClickable(event) {
+function offClickable() {
 	overClickable = false
+	// Emphasis on leave event, waiting on selCatchUp:
+	sel.style.transition = 'all 0.2s, width 0.25s, height 0.25s, opacity 0.25s'
+	sel.style.transitionTimingFunction = 'ease-out'
+
 	ret.forEach(elem => elem.style.opacity = '1')
 	retAct.style.visibility = 'hidden'
 
 	sel.style.width = '1px'
 	sel.style.height = '1px'
 	sel.style.opacity = '0.4'
-	isAnim = true
-	tID = setTimeout(() => { 
-		sel.style.transition = 'transform 0.2s, opacity 0.25s'
-		isAnim = false
-	}, 600)
+
+	const selCatchUp = () => {
+		const selRect = sel.getBoundingClientRect(),
+		deltaX = mouseX - (selRect.left + 3),
+		deltaY = mouseY - (selRect.top + 3),
+		distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+
+		// console.log(distance)
+		if (distance < 5) {
+			sel.style.transition = 'transform 0.2s, opacity 0.25s, \
+			width 0.2s, height 0.2s' // in case true in 200ms
+			sel.style.transitionTimingFunction = 'ease-out'
+		} else setTimeout(selCatchUp, 50)
+	}
+
+	selCatchUp()
 }
 
 </script>
