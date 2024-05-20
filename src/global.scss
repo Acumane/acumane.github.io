@@ -17,20 +17,49 @@ html, body {
 	cursor: none;
 	overflow: hidden;
 	user-select: none;
+	padding: 0;
 }
 
-a, button, [role="button"] {
-  cursor: none;
+#header {
+	padding: 10px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+}
+
+button, a,
+input[type="button"],
+input[type="submit"],
+[onclick] {
+	position: relative;
+	cursor: none;
+
+	&::before {
+		content: "";
+		position: absolute;
+		top: -10px;
+		right: -10px;
+		bottom: -10px;
+		left: -10px;
+	}
 }
 
 a {
 	color: $primary;
 	text-decoration: none;
+	font-size: 0.9em;
+	padding-bottom: 2px;
 	
 	&:hover, &:focus {
 		color: #D0FC0A;
 		text-decoration: wavy underline;
 	}
+}
+
+[data-icon="gh"] {
+	fill: $primary;
+	width: 22px; height: 22px;
+	margin: 0 4px 1px 0;
 }
 
 #v-line {
